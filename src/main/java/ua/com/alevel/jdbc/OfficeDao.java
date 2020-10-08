@@ -5,4 +5,5 @@ import java.util.List;
 
 public interface OfficeDao {
     List<OfficeEntity> getAllOffices() throws SQLException;
+    boolean deleteById(int id) throws SQLException;
 }

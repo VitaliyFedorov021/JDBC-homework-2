@@ -33,7 +33,7 @@ public class OfficeDaoImpl implements OfficeDao {
         try {
             conn.setAutoCommit(false);
             statement = conn.createStatement();
-            set = statement.executeQuery("SELECT * FROM offices WHERE territory = 'EMEA';");
+            set = statement.executeQuery("SELECT * FROM offices;");
             offices = new ArrayList<>();
             while (set.next()) {
                 OfficeEntity office = new OfficeEntity();
@@ -49,6 +49,7 @@ public class OfficeDaoImpl implements OfficeDao {
             }
             conn.commit();
         } catch (SQLException e) {
+            conn.rollback();
             e.printStackTrace();
         } finally {
             conn.close();
@@ -56,5 +57,24 @@ public class OfficeDaoImpl implements OfficeDao {
             set.close();
         }
         return offices;
+    }
+
+    @Override
+    public boolean deleteById(int id) throws SQLException {
+        Connection conn = getConnection();
+        PreparedStatement statement = null;
+        boolean res = false;
+        try {
+            statement = conn.prepareStatement("DELETE FROM offices WHERE officeCode = ?");
+            statement.setInt(1, id);
+            statement.executeUpdate();
+            res = true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            statement.close();
+            conn.close();
+        }
+        return res;
     }
 }
